@@ -1,0 +1,113 @@
+%% LaTeX2e class for student theses
+%% sections/conclusion.tex
+%% 
+%% Karlsruhe Institute of Technology
+%% Institute for Program Structures and Data Organization
+%% Chair for Software Design and Quality (SDQ)
+%%
+%% Dr.-Ing. Erik Burger
+%% burger@kit.edu
+%%
+%% Version 1.3.3, 2018-04-17
+
+\chapter{Conclusion}
+\label{ch:conclusion}
+
+\section{Summary}
+
+In this work, we investigated how to visually explore large document collections by employing semantics obtained from word embeddings of the document's textual content.
+We studied the problem for the task of patent landscaping as a case study.
+For that, with help of patent experts we studied the particularities of patent landscaping domain.
+We then proposed an interactive visualization approach that takes them into account.
+
+We implemented a proof-of-concept interactive prototype.
+Similarities between documents are expressed through averaging weighted word embeddings of words in a document.
+The visualization makes the semantic space visible by reducing it to two dimensions with \gls{tsne}.
+Additionally, multiple levels of detail are implemented via hierarchical clustering followed by a key term extraction.
+This helps make the local and global structures in the data visible, thereby supporting explainability of the semantic space.
+
+Moreover, we incorporated metadata attributes of various types, for example, temporal, categorical and hierarchical, into the display through use of coordinated views.
+A zoomable scatter plot displays documents, while a sunburst and a histogram aggregate metadata values and serve to highlight and filter corresponding areas in the scatter plot.
+A detail view contributes to the exploration by providing maximal level of detail on demand.
+Taken as a whole, the user interface provided a way to discern patterns arising from the combination of semantically related clusters and the distributions of metadata values.
+
+As a finishing part of the case study, we evaluated the prototype in a usability study with patent experts.
+We compared the word2vec-based document embeddings to \gls{tf-idf} vectors as sparse document representations.
+
+\section{Key results}
+
+The chosen interaction techniques proved to be consistent and intuitive.
+The study showed that the user interface of the prototype influenced the participants' perceptions significantly, while the way patents are situated and clustered did not play a major role.
+This is partly due to the fact that both approaches resulted in very similar extracted cluster key terms.
+The proportion of overlapping cluster key terms between both approaches increased with the size of a dataset.
+This can possibly be attributed to the greater influence of noise among local structures within the data for smaller datasets.
+
+The semantic approach produced clusters that were better separated and placed more intuitively with regard to each other.
+The reason for this might be that semantic embeddings take the context of a given word, its synonyms, more specific or abstract words, etc. into account.
+This possibly results in a high-dimensional structure that is more cohesive and continuous as compared to the sparse \gls{tf-idf}-based representation.
+
+The study results indicated that the combination of the semantic representations of documents' textual content and their metadata was understood by the participants and was likely helpful for finding clusters.
+Nevertheless, further research would be necessary to examine the mental processes involved in such exploration as it is a cognitively complex task.
+
+The proposed visualization approach provides added value to the task of patent landscaping and can be applied to other document exploration tasks.
+
+\section{Future work}
+\label{sec:future_work}
+
+In this section we provide an outlook on the possible improvements of our approach, both general and restricted to the domain of patent landscaping.
+
+\subsection{Improvements independent of the patent domain} 
+
+Patent landscaping depends heavily on the input dataset.
+\cite{Abood2018a} proposes a neural-network-based approach that expands the given seed dataset by following its citations \textit{outwards}.
+The model they developed then prunes the patents that are not directly relevant to the seed's topic.
+This results in a more complete dataset because it now contains related and relevant documents that would have been omitted otherwise.
+Their approach would be extremely useful as a part of the data acquisition phase before our data processing pipeline.
+
+The data processing for our visualization at the moment involves one manual step that is very influential for the result.
+It is the selection of suitable cut-off values for the three detail levels of hierarchical clustering.
+A single optimal clustering does not exist due to the subjective human perception.
+This means a heuristic must be introduced that would help find advantageous number and size of the clusters and possibly even the number of levels of detail depending on the size of the dataset.
+
+Our approach addresses the challenge of visual scalability as it allows the users to explore hundreds to thousands of documents simultaneously.
+However, the computing power available to us was not sufficient for a smooth operation when showing ca. 2600 documents simultaneously.
+For large document collections, it would be immensely advantageous to allow a graceful degradation of the functionality for a fluid performance.
+A balance must be found between preserving the functionality and preserving an adequate response time.
+
+Composing a document embedding out of word2vec embeddings is no longer state-of-the art.
+There has been a number of promising approaches for context-sensitive word embeddings or document embeddings such as paragraph2vec \cite{Le2014}, ELMo \cite{Peters2018}, BERT \cite{Devlin2018} etc.
+We chose word2vec as a simple standard approach which proved to be successful.
+Moreover, developing a new embedding method or training a model specifically for the patent domain based on an existing approach was not in the scope of this work.
+However, it might be worthwhile to compare different word and document embedding methods.
+Moreover, embedding different parts of the text document separately (in our case, patent's claims and sections of description) might provide interesting insights.
+
+Considering the key term extraction for single documents, a number of advanced algorithms based on \gls{tf-idf} exist \cite{Liu2010} \cite{Kim2009}.
+Moreover, there are key term extraction methods not based on \gls{tf-idf}, such as \gls{rake} \cite{rose} and TextRank \cite{Mihalcea2004}.
+It might be worthwhile to compare those algorithms to each other and to our straightforward implementation of \gls{tf-idf}.
+
+Our experiments showed that \gls{tsne} is the most suitable dimension reduction method at the moment.
+Its result, however, is dependent on the parameters of the algorithm, especially the perplexity.
+With a change in perplexity local structures within the data change their shape.
+It might prove valuable to let the user dynamically vary the perplexity to see how the cluster shapes change.
+It would, however, require a waiting process because the clusters and their key terms have to be generated anew.
+
+We briefly attempted to derive general key terms from specific ones with unsatisfactory results.
+If one were to determine the exact meaning of a key term out of a multitude of its contextual meanings (synset detection), it would open a possibility to reliably augment cluster terms with hypernyms.
+
+\subsection{Patent-specific improvements}
+
+It came to our attention during the interviews with patent experts that added value patent databases exist.
+Patent texts in them are rewritten in a concise way by trained professionals.
+We assume that a semantic approach such as ours would perform significantly better on the data derived from such added value databases.
+
+Inventors usually play a smaller role in the patent landscape than institutions.
+It could be useful to automatically detect private persons and companies and possibly hide single inventors for a less cluttered overview.
+A special case would be when a patent belongs only to physical persons without association with any institution. 
+One should not hide all inventors to avoid showing patents without any single assignee.
+Alternatively, one could aggregate such inventors into one group called ``Miscellaneous'' or ``Others''.
+
+There are certain patent properties that we did not take into account.
+One example is the kind code which distinguishes between application, grant, search report, correction, etc. and is build differently for each country.
+Citations can also be of different types.
+It might be profitable for patent experts to be able to explore this information in addition to the information we have already present.
+ 

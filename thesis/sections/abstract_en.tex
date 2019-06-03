@@ -1,0 +1,35 @@
+%% LaTeX2e class for student theses
+%% sections/abstract_en.tex
+%% 
+%% Karlsruhe Institute of Technology
+%% Institute for Program Structures and Data Organization
+%% Chair for Software Design and Quality (SDQ)
+%%
+%% Dr.-Ing. Erik Burger
+%% burger@kit.edu
+%%
+%% Version 1.3.3, 2018-04-17
+
+\Abstract
+The number of written works describing scientific progress is steadily increasing, which necessitates development of supportive tools for their efficient analysis.
+These documents are characterized not only by their textual content, but also by a number of metadata attributes of various kinds, including any relationships between documents.
+This complexity makes development of a visualization approach to aid examination of written works a challenging task.
+Patents exemplify this problem as large amounts of them are studied by companies to gain competitive advantages and guide research and development efforts.
+
+We propose an approach for explorative visualization based on both metadata and semantic embeddings of patent’s content.
+Word embeddings from a pre-trained word2vec model are used to determine similarities between documents. 
+Moreover, hierarchical clustering methods help provide several levels of semantic detail with via extracted relevant key terms.
+To the best of our knowledge, no existing visualization approach combines semantic embeddings with hierarchical clustering while supporting various interaction types based on metadata attributes.
+
+Our approach makes use of user interaction techniques such as brushing and linking, focus plus context, details on demand and semantic zoom. 
+Because of that, it becomes possible to examine the patterns that result from the interplay between 1) distributions of metadata values and 2) positions in the semantic space.
+
+The visualization concept is shaped by user interviews and evaluated via a think-aloud study with patent experts. 
+During the evaluation we compared our approach to a baseline approach based on \gls{tf-idf} vectors. 
+The usability study indicated that visualization metaphors and interaction techniques were appropriately chosen.
+Moreover, it showed that the user interface of the prototype played a much larger role in participants' impression than the way patents are situated and clustered.
+In fact, both approaches resulted in very similar extracted cluster key terms.
+Nevertheless, the semantic approach resulted in more intuitive relative placement of clusters and better separation of clusters.
+
+Proposed visualization layout, interaction techniques and semantic methods may be extended to other kinds of text documents, i. e. scientific publications. 
+Other embedding methods such as paragraph2vec \cite{Le2014} or BERT \cite{Devlin2018} could be used to take advantage of contextual dependencies in text above the level of single words.

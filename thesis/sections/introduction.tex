@@ -1,0 +1,131 @@
+%% LaTeX2e class for student theses
+%% sections/content.tex
+%% 
+%% Karlsruhe Institute of Technology
+%% Institute for Program Structures and Data Organization
+%% Chair for Software Design and Quality (SDQ)
+%%
+%% Dr.-Ing. Erik Burger
+%% burger@kit.edu
+%%
+%% Version 1.3.3, 2018-04-17
+
+\chapter{Introduction}
+\label{ch:Introduction}
+
+%To gain competitive advantages and guide research and development efforts, companies analyze patents in a given domain, with a patent landscape as a result. 
+%Creating such a landscape is a cognitively complex task considering the amount of text and metadata (registration country, assignee company, patent classification, etc.) in each patent document and the large number of documents.
+
+\section{Background and motivation}
+
+Semantic embeddings are used in \gls{nlp} to capture relationships between text documents. 
+However, positions and distances in the embedding space are not easily explainable and can hardly be understood by a user by themselves. 
+Additional data dimensions incorporated into the representation of a semantic space provide immense added value. 
+This is especially the case when visually exploring large document collections, where human perception must be aided in the task of finding patterns in data to prevent cognitive overload.
+
+One example of a task in which such exploration takes place is \textit{patent landscaping}.
+It ``constitutes an overview of patenting activity in a field of technology [...] and seeks to present complex information about this activity in a clear and accessible manner'' \cite{Trippe2015}.
+Patents are an enormously valuable source of technology intelligence. 
+They exemplify the problem at hand because they are text documents with a clearly defined structure, lots of metadata and references to other patent documents. 
+With help of patent landscaping, companies acquire competitive advantages and steer their research and development efforts.
+
+With about 3.1 million patent applications filed worldwide in 2016 \cite{WorldIntellectualPropertyOrganizationWIPO2017} and thousands of patent documents subject to analysis for a single domain, an effective approach facilitating the analysis is crucial.
+
+\section{Objective and research questions}
+\label{sec:objectives}
+
+%explorative data visualization which incorporates semantic embeddings and faceted metadata.
+
+The objective of this work is to provide a solution for the problem of exploration of large document collections.
+The proposed visualization approach should take particularities of the patent domain into account and therefore be an efficient aid in the task of patent landscaping.
+At the same time, the proposed approach should be generalizable for application on various kinds of text documents.
+
+The objective presents a number of challenges that have to be addressed. 
+They are described in \autoref{sec:challenges}.
+
+Research questions that are being asked in this thesis are: 
+\begin{itemize}
+\item How can semantic embeddings be displayed in an transparent and explainable way?
+\item How can semantic information enhance visual exploration of large document collections?
+\item How can metadata of various types be combined with the semantic dimension through user interaction?
+\item Do semantic embeddings provide added value compared with traditional frequency-based representations?
+\end{itemize}
+
+\section{Challenges}
+\label{sec:challenges}
+
+\subsection{Characteristics of data}
+\subsubsection{Vocabulary}
+
+Language and especially vocabulary in patent documents deviate significantly from generic written language.
+Essentially, patents are written in a very abstract way, so that they protect a higher number of potential embodiments (see \autoref{subsec:participant_alpha} for details).
+This complicates searching for similarities and differences in patent texts.
+
+Whenever the vocabulary used in patents is not too general, it is likely to be very specific.
+Technical terminology used to describe inventions is very unlikely to be contained in generic text corpora.
+Moreover, frequency-based text processing methods are susceptible to inaccuracies when a large part of vocabulary consists of rare technical terms.
+This is why a fine-tuning of the algorithm parameters related to term frequency is necessary.
+We address this 1) by using a model trained specifically on patent vocabulary (see \autoref{subsec:data_source})  and 2) by carefully adjusting parameters for the key term extraction algorithm, especially for cluster key terms as described in \autoref{subsec:hierarchical_clustering}.
+
+\subsubsection{Dimensionality and data types}
+
+The documents we are dealing with consist of textual parts and metadata. 
+High-dimensional text representations are necessary to represent content of patents.
+It is a challenge to map them onto a lower-dimensional visualization space in a beneficial way.
+Additionally, the visualization approach we aim to develop has to combine semantics gained from text with various visual dimensions derived from metadata of different types.
+We experiment with multiple dimension reduction techniques as described in \autoref{subsec:embeddings}.
+
+\subsubsection{Visual scalability}
+
+The datasets that are being analyzed by patent experts can consist of hundreds to thousands of documents.
+This is not ``big data'' in the classic sense of the word, but it definitely is on the upper end of the spectrum when it comes to visual representation.
+The challenge is to develop an approach that works equally well for a wide range of dataset sizes.
+It should be able to display thousands of documents in a comprehensive way.
+For that, the proposed visualization approach has to use screen space wisely and leverage different levels of detail to avoid overwhelming the user.
+This is why we provide different levels of detail via semantic zooming as described in \autoref{sec:outline_visualization_concept}.
+
+\subsection{Evaluation}
+
+The patent domain has been named in \cite{Chen2005} as an area where visualization has potential high-impact as a medium for finding causality, forming hypotheses and assessing available evidence.
+This makes interactive visualization an attractive research topic. 
+At the same time, the nature of the cognitive processes involved makes evaluation difficult.
+
+\cite{Carpendale2008} argues that a great variety of cognitive reasoning tasks exists.
+Low-level detailed tasks such as compare, contrast, cluster are more clearly defined.
+High-level complex cognitive tasks include understanding of data trends, uncertainties, causal relationships or learning a domain.
+No clear definition exists for some of those tasks, so they are challenging to test empirically.
+
+When testing visualization approaches with experts, success in a task may be attributed to an interplay between expert's 1) meta-knowledge, 2) knowledge from other sources and 3) knowledge gained from the presented data.
+This complicates interpretation of evaluation results further.
+We address this in our evaluation by having multiple tasks per hypothesis that we evaluate as described in \autoref{ch:evaluation}.
+
+\section{Structure of the thesis}
+\label{sec:structure_of_thesis}
+
+After the introduction in the first chapter, in \autoref{ch:related_work} we establish some fundamental concepts our approach builds upon.
+Among other things, we introduce some definitions from the patent domain that are used throughout this thesis.
+We then review the state of the art for data visualization approaches that provide means to explore scientific publications or patents.
+
+Then, in \autoref{ch:case_study} we define the framework for the case study to be conducted.
+The methodology is being established: the frame of reference of the study, the methods for data collection, etc.
+We justify our choice of semi-structured user interviews for the formative part and think-aloud study followed by a \gls{sus} questionnaire for the summative part.
+We then describe the course of the discussion during interviews with patent experts and summarize our findings and their effect on the development of a visualization concept.
+
+In \autoref{ch:concept}, we first briefly outline the concept for the visualization.
+We propose a visualization layout consisting of connected views of different kinds of interactive charts: scatter plot, histogram, sunburst with breadcrumbs and detail view.
+which implement principles of focus + context, brushing and linking, semantic zoom and Shneiderman's information visualization mantra
+Next, we justify the choice of a two-dimensional visualization space.
+We then describe how the initial idea appeared and how the concept evolved.
+Finally, we briefly cover how we derive semantic representations of documents, cluster them and extract relevant key terms to provide interpretability.
+
+Next, \autoref{ch:implementation} goes into detail about the data processing necessary to prepare patent documents for visualization: preprocessing and cleaning, computing document vectors, dimension reduction, extracting relevant key terms, hierarchical clustering, etc.
+It also contains a detailed description of the elements in the user interface of the visualization as they were implemented in the prototype.
+We then elaborate on the interactions between the coordinated views of the prototype.
+
+\autoref{ch:evaluation} establishes hypotheses about the visualization approach that pertain to the different visual elements and aspects of interaction.
+Then, the hypotheses are evaluated through a think-aloud study, which detects usability problems and verifies how suitable the developed approach is for supporting exploration.
+We confirm that the visualization metaphors and interaction techniques were chosen appropriately.
+Moreover, the study shows that the user interface of the prototype played a much larger role in participants' impression than the way patents are situated and clustered.
+
+Finally, \autoref{ch:conclusion} summarizes the proposed approach and the key findings of this work.
+We conclude by discussing possible improvements both in a general sense and specifically related to patent domain.

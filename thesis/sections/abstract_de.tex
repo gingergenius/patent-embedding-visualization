@@ -1,0 +1,36 @@
+%% LaTeX2e class for student theses
+%% sections/abstract_de.tex
+%% 
+%% Karlsruhe Institute of Technology
+%% Institute for Program Structures and Data Organization
+%% Chair for Software Design and Quality (SDQ)
+%%
+%% Dr.-Ing. Erik Burger
+%% burger@kit.edu
+%%
+%% Version 1.3.3, 2018-04-17
+
+\Abstract
+Die Menge der Veröffentlichungen, die den wissenschaftlichen Fortschritt dokumentieren, wächst kontinuierlich.
+Dies erfordert die Entwicklung der technologischen Hilfsmittel für eine effiziente Analyse dieser Werke.
+Solche Dokumente kennzeichnen sich nicht nur durch ihren textuellen Inhalt, sondern auch durch eine Menge von Metadaten-Attributen verschiedenster Art, unter anderem Beziehungen zwischen den Dokumenten.
+Diese Komplexität macht die Entwicklung eines Visualisierungsansatzes, der eine Untersuchung der schriftlichen Werke unterstützt, zu einer notwendigen und anspruchsvollen Aufgabe.
+Patente sind beispielhaft für das beschriebene Problem, weil sie in großen Mengen von Firmen untersucht werden, die sich Wettbewerbsvorteile verschaffen oder eigene Forschung und Entwicklung steuern wollen.
+
+Vorgeschlagen wird ein Ansatz für eine explorative Visualisierung, der auf Metadaten und semantischen Embeddings von Patentinhalten basiert ist.
+Wortembeddings aus einem vortrainierten Word2vec-Modell werden genutzt, um Ähnlichkeiten zwischen Dokumenten zu bestimmen.
+Darüber hinaus helfen hierarchische Clusteringmethoden dabei, mehrere semantische Detaillierungsgrade durch extrahierte relevante Stichworte anzubieten.
+Derzeit dürfte der vorliegende Visualisierungsansatz der erste sein, der semantische Embeddings mit einem hierarchischen Clustering verbindet und dabei diverse Interaktionstypen basierend auf Metadaten-Attributen unterstützt.
+
+Der vorgestellte Ansatz nimmt Nutzerinteraktionstechniken wie Brushing and Linking, Focus plus Kontext, Details-on-Demand und Semantic Zoom in Anspruch.
+Dadurch wird ermöglicht, Zusammenhänge zu entdecken, die aus dem Zusammenspiel von 1) Verteilungen der Metadatenwerten und 2) Positionen im semantischen Raum entstehen.
+
+Das Visualisierungskonzept wurde durch Benutzerinterviews geprägt und durch eine Think-Aloud-Studie mit Patentenexperten evaluiert.
+Während der Evaluation wurde der vorgestellte Ansatz mit einem Baseline-Ansatz verglichen, der auf \gls{tf-idf}-Vektoren basiert.
+Die Benutzbarkeitsstudie ergab, dass die Visualisierungsmetaphern und die Interaktionstechniken angemessen gewählt wurden.
+Darüber hinaus zeigte sie, dass die Benutzerschnittstelle eine deutlich größere Rolle bei den Eindrücken der Probanden gespielt hat als die Art und Weise, wie die Patente platziert und geclustert waren.
+Tatsächlich haben beide Ansätze sehr ähnliche extrahierte Clusterstichworte ergeben.
+Dennoch wurden bei dem semantischen Ansatz die Cluster intuitiver platziert und deutlicher abgetrennt.
+
+Das vorgeschlagene Visualisierungslayout sowie die Interaktionstechniken und semantischen Methoden können auch auf andere Arten von schriftlichen Werken erweitert werden, z. B. auf wissenschaftliche Publikationen.
+Andere Embeddingmethoden wie Paragraph2vec \cite{Le2014} oder BERT \cite{Devlin2018} können zudem verwendet werden, um kontextuelle Abhängigkeiten im Text über die Wortebene hinaus auszunutzen.

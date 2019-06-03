@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Prototype for master thesis "Semantic Exploration of Text Documents with Multi-Faceted Metadata Employing Word Embeddings: Patent Landscaping Use Case"</title>
+		<link href="css/style.css" rel="stylesheet" type="text/css" >
+		<meta http-equiv="Expires" CONTENT="0">
+		<meta http-equiv="Cache-Control" CONTENT="no-cache">
+		<meta http-equiv="Pragma" CONTENT="no-cache">
+	</head>
+	<body>
+		<svg></svg>
+		<button id="reset_zoom">Reset zoom</button>
+		<select id="seed_selector">
+			<option value="hair_dryer">Hair dryer</option>
+			<option value="video_codec">Video codec</option>
+			<option value="diesel">Diesel</option>
+			<!-- <option value="contact_lens">Contact lens</option> -->
+			<option selected value="contact_lens_us_c">Contact lens US only</option>
+			<option value="3d_printer">3D printer</option>
+		</select>
+		<select id="hierarchy_selector">
+			<option value="assignee">Assignee</option>
+			<option value="country">Country</option>
+			<option selected value="ipc_classes">IPC classes</option>			
+			<option value="assignee_country">Assignee - Country</option>
+			<option value="assignee_ipc_classes">Assignee - IPC classes</option>
+			<option value="country_assignee">Country - Assignee</option>
+			<option value="country_ipc_classes">Country - IPC classes</option>
+			<option value="ipc_classes_assignee">IPC classes - Assignee</option>
+			<option value="ipc_classes_country">IPC classes - Country</option>			
+		</select>
+		<br>
+		<br>
+		<select id="approach_selector">
+			<option selected value="semantic">Semantic</option>
+			<option value="baseline">Baseline (TF-IDF)</option>
+			<!-- <option value="semantic">Approach A</option>
+			<option selected value="baseline">Approach B</option> -->
+		</select> 
+		
+ 
+		<!-- External libraries-->
+		<script src="../src/js_libs/d3.v5.js"></script>
+		<script src="../src/js_libs/d3-selection-multi.v1.js"></script>
+		<script src="../src/js_libs/d3-tip.js"></script>
+		<script src="../src/js_libs/rebind.js" charset="utf-8"></script> 
+		<script src="../src/js_libs/breadcrumb.js"></script> 
+
+		<!-- Own code starts here -->
+		<script src="js/scatter.js"></script>
+		<script src="js/table.js"></script>
+		<script src="js/brush_snapping.js"></script>
+		<script src="js/zoomable_sunburst.js"></script>
+
+		<script>			
+			const window_width = window.innerWidth;
+			const window_height = window.innerHeight;
+
+			const first_column_width = 0.75 * window_width - 4;
+			const second_column_width = 0.25 * window_width;
+
+			const first_column_first_row_height = 0.8 * window_height - 4;
+			const first_column_second_row_height = 0.2 * window_height;
+
+			const second_column_first_row_height = 0.65 * window_height - 30;
+			const second_column_second_row_height = 0.35 * window_height;
+
+			const margin_left = 0;
+			const margin_bottom = 30;
+
+			var svg = d3.select("svg")
+				.attr("width", first_column_width + second_column_width)
+				.attr("height", first_column_first_row_height + first_column_second_row_height)	
+
+			var approach_selector = d3.select("#approach_selector");	
+			var seed_selector = d3.select("#seed_selector");
+			var hierarchy_selector = d3.select("#hierarchy_selector");
+
+			var reset_zoom_button = d3.select("#reset_zoom");
+
+			reset_zoom_button.style("position", "absolute")
+			reset_zoom_button.style("left", first_column_width-90 + "px")
+
+			var scatter, table, histogram, sunburst;
+			
+			[scatter, table, histogram, sunburst] = generateLayout(svg);
+			attachEventHandlers(scatter, table, histogram, sunburst);
+
+			reloadData();
+			
+			function reloadData(seed_name=seed_selector.node().value, approach=approach_selector.node().value) {
+				d3.json("data/" + approach + "/" + seed_name + ".json").then(function(data) {
+
+					data.forEach(function(d) {
+						d.priority_date = d3.timeParse("%Y%m%d")(d.priority_date);
+					})
+					console.log("patents", data);
+									
+					scatter.data(data)
+					histogram.data(data)
+
+					d3.json("data/" + approach + "/" + seed_name + "_clusters.json").then(function(cl_data) {
+						console.log("cluster data", cl_data);
+
+						scatter.clusterData(cl_data)
+		
+						reloadHierarchy();
+					})	
+					
+					d3.json("data/explanations.json").then(function(explanation_data) {
+						console.log("explanation data", explanation_data)
+						
+						sunburst.explanations(explanation_data)
+					})
+				});
+			}
+
+			function reloadHierarchy(seed_name = seed_selector.node().value, hierarchy_levels = hierarchy_selector.node().value) {
+				d3.json('data/hierarchy/' + seed_name + '_' + hierarchy_levels + '.json').then(function(data){
+					console.log("sunburst data", data);
+					sunburst.data(data)
+				});
+				//histogram.update();
+			} 
+
+			function generateLayout(svg_node) {
+				//scatter plot
+				var sgroup = svg_node.append("g")
+					.attr("id", "scatter")
+					.attr("transform", "translate(" + [margin_left, 0] + ")")
+				scatter_chart = d3.chart.scatter()
+					.width(first_column_width - margin_left)
+					.height(first_column_first_row_height)
+				scatter_chart(sgroup)
+				
+				//table
+				var foreign_object = svg_node.append("foreignObject")
+					.attrs({
+						x: first_column_width + 30,
+						y: second_column_first_row_height,
+						width: second_column_width - 30,
+						height: second_column_second_row_height
+					});
+
+				var tgroup = foreign_object.append("xhtml:body")
+					.attr("id", "table")
+
+				table_chart = d3.chart.table()
+					.width(second_column_width - 30)
+					.height(second_column_second_row_height)
+				table_chart(tgroup)
+
+				//snapping histogram
+				var shgroup = svg_node.append("g")
+						.attr("id", "histogram")
+						.attr("transform", "translate(" + [margin_left, first_column_first_row_height + 20] + ")")
+				histogram_chart = d3.chart.snapping_histogram()
+					.height(first_column_second_row_height - margin_bottom - 20)
+					.width(first_column_width - margin_left)
+				histogram_chart(shgroup)
+
+				//sunburst
+				var sbgroup = svg_node.append("g")
+					.attr("id", "sunburst")
+					.attr("transform", "translate(" + [first_column_width + 10, 0] + ")")
+				sunburst_chart = d3.chart.sunburst()
+					.width(second_column_width - 20)
+					.height(second_column_first_row_height)
+				sunburst_chart(sbgroup)	
+				
+				return [scatter_chart, table_chart, histogram_chart, sunburst_chart]
+			}
+
+			function attachEventHandlers(scatter_chart, table_chart, histogram_chart, sunburst_chart) {
+				sunburst_chart.on("hover", function(hovered){
+					scatter_chart.highlight(hovered);
+					histogram.highlight(hovered);
+				})
+
+				sunburst_chart.on("sunburstLevelChanged", function(args){ //filter
+					scatter_chart.matchColors(args[0], args[1]);
+					histogram.filter(args[0])
+				})	
+				
+				histogram_chart.on("filter", function(filtered) {																	
+					var top_layer = sunburst.filter(filtered);
+					scatter_chart.filter(filtered);	
+					scatter_chart.matchColors(top_layer, null);					
+				})
+		
+				scatter_chart.on("hover", function(hovered) {         
+					table_chart.showDetails(hovered);
+					histogram.highlightBin(hovered);
+				})
+
+				scatter_chart.on("endHover", function(hovered) {     
+					table_chart.showDetails(scatter_chart.getSelectedPoint()); 
+					histogram.removeHighlightBin(hovered);
+				})
+
+				approach_selector.on("change", function() { reloadData() })
+				seed_selector.on("change", function() { reloadData() })
+				hierarchy_selector.on("change", function() { reloadHierarchy() })		
+				reset_zoom_button.on("click", function() { scatter_chart.resetZoom() })				
+			}
+
+			</script>
+	</body>
+</html>

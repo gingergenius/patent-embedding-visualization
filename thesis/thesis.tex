@@ -1,0 +1,174 @@
+%% LaTeX2e class for student theses
+%% thesis.tex
+%% 
+%% Karlsruhe Institute of Technology
+%% Institute for Program Structures and Data Organization
+%% Chair for Software Design and Quality (SDQ)
+%%
+%% Dr.-Ing. Erik Burger
+%% burger@kit.edu
+%%
+%% See https://sdqweb.ipd.kit.edu/wiki/Dokumentvorlagen
+%%
+%% {$HeadURL$}
+%% {$LastChangedDate$}
+%% {$LastChangedRevision$}
+%% {$LastChangedBy$}
+
+%% Available page modes: oneside, twoside
+%% Available languages: english, ngerman
+%% Available modes: draft, final (see README)
+
+\documentclass[twoside, english, final]{sdqthesis}
+%\documentclass[oneside, english, draft]{sdqthesis}
+
+%% ---------------------------------
+%% | Information about the thesis  |
+%% ---------------------------------
+
+%% Name of the author
+\author{Tatyana Skripnikova}
+
+%% Title (and possibly subtitle) of the thesis
+\title{Semantic Exploration of Text Documents with Multi-Faceted Metadata Employing Word Embeddings: The Patent Landscaping Use Case}
+
+%% Type of the thesis 
+\thesistype{Master's Thesis}
+
+%% Change the institute here, ``IPD'' is default
+% \myinstitute{Institute for \dots}
+
+%% You can put a logo in the ``logos'' directory and include it here
+%% instead of the SDQ logo
+% \grouplogo{myfile}
+%% Alternatively, you can disable the group logo
+% \nogrouplogo
+
+%% The reviewers are the professors that grade your thesis
+\reviewerone{Prof. Dr. Ralf H. Reussner}
+\reviewertwo{Prof. Dr. Harald Sack}
+
+%% The advisors are PhDs or Postdocs
+\advisorone{Dr. Hidir Aras}
+
+%% Please enter the start end end time of your thesis
+\editingtime{01 November 2018}{31 May 2019}
+
+\settitle
+
+%% --------------------------------
+%% | Settings for word separation |
+%% --------------------------------
+
+%% Describe separation hints here.
+%% For more details, see 
+%% http://en.wikibooks.org/wiki/LaTeX/Text_Formatting#Hyphenation
+\hyphenation{
+% me-ta-mo-del
+}
+
+%% --------------------------------
+%% | Bibliography                 |
+%% --------------------------------
+
+%% Use biber instead of BibTeX, see README
+
+\usepackage[citestyle=numeric,style=numeric,backend=biber]{biblatex}
+
+\addbibresource{thesis.bib}
+
+\usepackage[disable]{todonotes}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{rotating, graphicx}
+
+\usepackage[nopostdot,toc,acronym,nomain,nonumberlist,automake]{glossaries}
+
+\setlength\parindent{0pt}
+%\setlength\parskip{\bigskipamount}
+\setlength\parskip{\medskipamount}
+%\setlength\parskip{\smallskipamount}
+
+\makeglossaries
+\setacronymstyle{long-short}
+
+\loadglsentries[acronym]{sections/glossary}
+
+%% ====================================
+%% ====================================
+%% ||                                ||
+%% || Beginning of the main document ||
+%% ||                                ||
+%% ====================================
+%% ====================================
+\begin{document}
+
+%% Set PDF metadata
+\setpdf
+
+%% Set the title
+\maketitle
+
+%% The Preamble begins here
+\frontmatter
+
+\input{sections/declaration.tex}
+
+\setcounter{page}{1}
+\pagenumbering{roman}
+
+%% ----------------
+%% |   Abstract   |
+%% ----------------
+ 
+%% For theses written in English, an abstract both in English
+%% and German is mandatory.
+%%
+%% For theses written in German, a German abstract is sufficient.
+%%
+%% The text is included from the following files:
+%% - sections/abstract
+
+\includeabstract
+
+%% ------------------------
+%% |   Table of Contents  |
+%% ------------------------
+\tableofcontents
+\todo{Switch to two-sided mode}
+\todo{Font size}
+
+\listoffigures
+\listoftables
+\printglossary[title={Abbreviations},type=acronym,style=long]
+
+%% -----------------
+%% |   Main part   |
+%% -----------------
+
+\mainmatter
+
+\input{sections/introduction.tex}
+\input{sections/related_work.tex}
+\input{sections/case_study.tex}
+\input{sections/concept.tex}
+\input{sections/implementation.tex}
+\input{sections/evaluation.tex}
+\input{sections/conclusion.tex}
+
+%% --------------------
+%% |   Bibliography   |
+%% --------------------
+
+%% Add entry to the table of contents for the bibliography
+\printbibliography[heading=bibintoc]
+
+%% ----------------
+%% |   Appendix   |
+%% ----------------
+\appendix
+\input{sections/appendix.tex}
+
+\end{document}
